@@ -1,0 +1,3 @@
+https://github.com/petercunha/Emotion
+https://github.com/akmadan/Emotion_Detection_CNN
+https://github.com/datamagic2020/Emotion_detection_with_CNN
