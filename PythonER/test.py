@@ -18,7 +18,6 @@ print("The model has been prepared.")
 record = cv2.VideoCapture(0)
 
 while True:
-    # Draw box around face based on haar cascade.
     ret, frame = record.read()
     frame = cv2.resize(frame, (1280, 720))
 
