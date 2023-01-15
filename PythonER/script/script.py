@@ -85,7 +85,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=base_learning_rat
 
 model.summary()
 
-nr_epochs = 100
+nr_epochs = 20
 
 history = model.fit(train_dataset,
                     epochs=nr_epochs,
@@ -116,7 +116,7 @@ plt.plot(loss, label='Training Loss')
 plt.plot(val_loss, label='Validation Loss')
 plt.legend(loc='upper right')
 plt.ylabel('Cross Entropy')
-plt.ylim([0,1.0])
+plt.ylim([0, 2.0])
 plt.title('Training and Validation Loss')
 plt.xlabel('epoch')
 plt.show()

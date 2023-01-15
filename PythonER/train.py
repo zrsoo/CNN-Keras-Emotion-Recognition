@@ -3,8 +3,8 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, Flatten
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
-from keras.metrics import BinaryAccuracy, FalseNegatives, FalsePositives, TruePositives, TrueNegatives, Precision, Recall, AUC
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
 
 # plots accuracy and loss curves
@@ -12,25 +12,30 @@ def plot_model_history(model_history):
     """
     Plot Accuracy and Loss curves given the model_history
     """
-    fig, axs = plt.subplots(1, 2, figsize=(15, 5))
-    # summarize history for accuracy
-    axs[0].plot(range(1, len(model_history.history['accuracy']) + 1), model_history.history['accuracy'])
-    axs[0].plot(range(1, len(model_history.history['val_accuracy']) + 1), model_history.history['val_accuracy'])
-    axs[0].set_title('Model Accuracy')
-    axs[0].set_ylabel('Accuracy')
-    axs[0].set_xlabel('Epoch')
-    axs[0].set_xticks(numpy.arange(1, len(model_history.history['accuracy']) + 1),
-                      len(model_history.history['accuracy']) / 10)
-    axs[0].legend(['train', 'val'], loc='best')
-    # summarize history for loss
-    axs[1].plot(range(1, len(model_history.history['loss']) + 1), model_history.history['loss'])
-    axs[1].plot(range(1, len(model_history.history['val_loss']) + 1), model_history.history['val_loss'])
-    axs[1].set_title('Model Loss')
-    axs[1].set_ylabel('Loss')
-    axs[1].set_xlabel('Epoch')
-    axs[1].set_xticks(numpy.arange(1, len(model_history.history['loss']) + 1), len(model_history.history['loss']) / 10)
-    axs[1].legend(['train', 'val'], loc='best')
-    fig.savefig('plot.png')
+    acc = model_history.history['accuracy']
+    val_acc = model_history.history['val_accuracy']
+
+    loss = model_history.history['loss']
+    val_loss = model_history.history['val_loss']
+
+    plt.figure(figsize=(8, 8))
+    plt.subplot(2, 1, 1)
+    plt.plot(acc, label='Training Accuracy')
+    plt.plot(val_acc, label='Validation Accuracy')
+    plt.legend(loc='lower right')
+    plt.ylabel('Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylim([min(plt.ylim()), 1])
+    plt.title('Training and Validation Accuracy')
+
+    plt.subplot(2, 1, 2)
+    plt.plot(loss, label='Training Loss')
+    plt.plot(val_loss, label='Validation Loss')
+    plt.legend(loc='upper right')
+    plt.ylabel('Cross Entropy')
+    plt.ylim([0, 2.0])
+    plt.title('Training and Validation Loss')
+    plt.xlabel('Epoch')
     plt.show()
 
 
@@ -73,10 +78,8 @@ emodel.add(Dense(1024, activation='relu'))
 emodel.add(Dropout(0.5))
 emodel.add(Dense(7, activation='softmax'))
 
-metrics = [TruePositives(name='TP'), FalsePositives(name='FP'), TrueNegatives(name='TN'), FalseNegatives(name='FN'),
-           BinaryAccuracy(name='accuracy'), Precision(name='precision'), Recall(name='recall'), AUC(name='AUC')]
 
-emodel.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=0.0001, decay=1e-6), metrics=metrics)
+emodel.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=0.0001, decay=1e-6), metrics=['accuracy'])
 
 # Train model
 emodel_info = emodel.fit(
