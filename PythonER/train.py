@@ -3,6 +3,7 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, Flatten
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
+from keras.metrics import BinaryAccuracy, FalseNegatives, FalsePositives, TruePositives, TrueNegatives, Precision, Recall, AUC
 import matplotlib.pyplot as plt
 
 
@@ -33,8 +34,8 @@ def plot_model_history(model_history):
     plt.show()
 
 
-data_train = ImageDataGenerator(rescale=1. / 255)
-data_validation = ImageDataGenerator(rescale=1. / 255)
+data_train = ImageDataGenerator(rescale=1. / 255, rotation_range=0.1, horizontal_flip=True)
+data_validation = ImageDataGenerator(rescale=1. / 255, rotation_range=0.1, horizontal_flip=True)
 
 # Preprocess test images
 train_gen = data_train.flow_from_directory(
@@ -42,7 +43,8 @@ train_gen = data_train.flow_from_directory(
     target_size=(48, 48),
     batch_size=64,
     color_mode='grayscale',
-    class_mode='categorical')
+    class_mode='categorical',
+    )
 
 # Preprocess train images
 validation_gen = data_validation.flow_from_directory(
@@ -71,7 +73,10 @@ emodel.add(Dense(1024, activation='relu'))
 emodel.add(Dropout(0.5))
 emodel.add(Dense(7, activation='softmax'))
 
-emodel.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=0.0001, decay=1e-6), metrics=['accuracy'])
+metrics = [TruePositives(name='TP'), FalsePositives(name='FP'), TrueNegatives(name='TN'), FalseNegatives(name='FN'),
+           BinaryAccuracy(name='accuracy'), Precision(name='precision'), Recall(name='recall'), AUC(name='AUC')]
+
+emodel.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=0.0001, decay=1e-6), metrics=metrics)
 
 # Train model
 emodel_info = emodel.fit(
@@ -88,3 +93,6 @@ with open("emodel.json", "w") as file:
 
 # Save weights in h5 file
 emodel.save_weights('emodel.h5')
+
+plot_model_history(emodel_info)
+

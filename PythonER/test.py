@@ -5,13 +5,13 @@ from keras.models import model_from_json
 emotions = {0: "angry", 1: "disgusted", 2: "fearful", 3: "happy", 4: "neutral", 5: "sad", 6: "surprised"}
 
 # Load the json file and create the model
-file = open('model/emodel.json', 'r')
+file = open('emodel.json', 'r')
 loaded_model = file.read()
 file.close()
 emodel = model_from_json(loaded_model)
 
 # Get the weights
-emodel.load_weights('model/emodel.h5')
+emodel.load_weights('emodel.h5')
 print("The model has been prepared.")
 
 # Begin recording
