@@ -1,3 +1,6 @@
 https://github.com/petercunha/Emotion
 https://github.com/akmadan/Emotion_Detection_CNN
+https://github.com/Tomislav-Troha/Facial-Emotional-Recognition-Using-Keras
+https://github.com/oarriaga/face_classification/blob/master/report.pdf
 https://github.com/datamagic2020/Emotion_detection_with_CNN
+https://github.com/atulapra/Emotion-detection
