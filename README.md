@@ -1,122 +1,199 @@
-# ER-CNN-Keras: Emotion Recognition using CNNs with Keras
+# CNN-Keras Emotion Recognition 🧠 👁️ 😊
 
-This repository contains code for an emotion recognition project implemented using Convolutional Neural Networks (CNNs) with the Keras library in Python. The project explores recognizing seven basic human emotions (angry, disgusted, fearful, happy, neutral, sad, surprised) from facial images.
+A deep learning project that recognizes human emotions from facial expressions using Convolutional Neural Networks (CNNs) with Keras. This repository contains both a custom CNN implementation and transfer learning experiments with MobileNetV2.
 
-## Project Overview
+## 📋 Overview
 
-The primary goal of this project is to build and evaluate models capable of identifying emotions from facial expressions. It includes:
+This project explores the fascinating challenge of emotion recognition from facial images using deep learning techniques. The system can identify seven basic human emotions (angry, disgusted, fearful, happy, neutral, sad, surprised) from facial expressions captured via webcam in real-time.
 
-1.  **Custom CNN Model:** A CNN model built from scratch using Keras, trained on the FER-2013 dataset.
-2.  **Transfer Learning:** An exploration of using transfer learning with the pre-trained MobileNetV2 model, adapted for the emotion recognition task.
-3.  **Real-time Inference:** A script (`test.py`) that uses the trained custom CNN model to detect faces via webcam (using OpenCV and Haar Cascades) and predict their emotions in real-time.
-4.  **Documentation:** A detailed PDF report (`Documentation.pdf`) outlining the project context, methodology, results, and comparisons.
+The repository includes:
 
-## Repository Structure
+- 🔍 A custom CNN model built from scratch using Keras
+- 🔄 Transfer learning experiments with MobileNetV2
+- 📹 Real-time emotion recognition from webcam feed
+- 📊 Performance analysis and comparison of approaches
+
+## 🛠️ Technologies Used
+
+- **Python** - Primary programming language
+- **Keras/TensorFlow** - Deep learning framework
+- **OpenCV** - Computer vision library for face detection and image processing
+- **NumPy** - Numerical operations
+- **Matplotlib** - Visualization of training metrics
+- **Jupyter Notebook** - Interactive development for transfer learning experiments
+
+## 🧩 Project Components
+
+### 1. Custom CNN Model 🧠
+
+The custom CNN model is defined in `train.py` using Keras Sequential API with the following architecture:
+
+```
+Input (48x48 grayscale images)
+│
+├─ Conv2D (32 filters, 3x3 kernel, ReLU)
+│
+├─ Conv2D (64 filters, 3x3 kernel, ReLU)
+│
+├─ MaxPooling2D (2x2)
+│
+├─ Dropout (0.25)
+│
+├─ Conv2D (128 filters, 3x3 kernel, ReLU)
+│
+├─ MaxPooling2D (2x2)
+│
+├─ Conv2D (128 filters, 3x3 kernel, ReLU)
+│
+├─ MaxPooling2D (2x2)
+│
+├─ Dropout (0.25)
+│
+├─ Flatten
+│
+├─ Dense (1024 units, ReLU)
+│
+├─ Dropout (0.5)
+│
+└─ Dense (7 units, Softmax) → Output (7 emotion classes)
+```
+
+### 2. Transfer Learning with MobileNetV2 🔄
+
+The `jupyter/transfer_learning.ipynb` notebook explores using MobileNetV2 (pre-trained on ImageNet) for emotion recognition:
+
+- Base MobileNetV2 model with frozen weights
+- Custom top layers for emotion classification
+- Data augmentation techniques
+- Feature extraction and fine-tuning experiments
+
+### 3. Real-time Emotion Recognition 📹
+
+The `test.py` script implements a real-time emotion recognition system:
+
+1. Captures video from webcam
+2. Detects faces using Haar Cascade classifier
+3. For each detected face:
+   - Extracts and preprocesses the face region
+   - Feeds it to the trained CNN model
+   - Displays the predicted emotion on the video feed
+
+## 📊 Training Details
+
+### Dataset
+
+- **FER-2013** (Facial Expression Recognition 2013)
+- 48x48 pixel grayscale images of faces
+- Seven emotion categories: angry, disgusted, fearful, happy, neutral, sad, surprised
+- Data organized in `data/train` and `data/test` directories with subdirectories for each emotion class
+
+### Preprocessing & Augmentation
+
+- Images rescaled (divided by 255)
+- Real-time augmentation during training:
+  - Random rotations (±0.1 degrees)
+  - Random horizontal flips
+
+### Training Parameters
+
+- **Optimizer**: Adam (learning rate = 0.0001, decay = 1e-6)
+- **Loss Function**: Categorical Crossentropy
+- **Metrics**: Accuracy
+- **Epochs**: 50
+- **Batch Size**: 64
+
+## 📈 Results
+
+- The custom CNN model achieved approximately **63.4%** accuracy on the test set
+- The transfer learning approach with MobileNetV2 achieved around **35%** accuracy
+- The custom CNN outperformed the transfer learning approach for this specific task
+
+## 🚀 Usage
+
+### Prerequisites
+
+- Python 3.6+
+- Required libraries: TensorFlow, Keras, OpenCV, NumPy, Matplotlib
+
+### Installation
+
+1. Clone this repository:
+   ```
+   git clone https://github.com/zrsoo/CNN-Keras-Emotion-Recognition.git
+   cd CNN-Keras-Emotion-Recognition
+   ```
+
+2. Install required dependencies:
+   ```
+   pip install tensorflow opencv-python numpy matplotlib
+   ```
+
+### Training the Model
+
+To train the custom CNN model:
+
+```
+cd PythonER
+python train.py
+```
+
+This will:
+- Load the FER-2013 dataset
+- Train the CNN model
+- Save the model architecture to `emodel.json`
+- Save the model weights to `emodel.h5`
+- Generate accuracy and loss plots
+
+### Running Real-time Emotion Recognition
+
+To run the real-time emotion recognition system:
+
+```
+cd PythonER
+python test.py
+```
+
+This will:
+- Load the trained model
+- Access your webcam
+- Detect faces and predict emotions in real-time
+- Press 'q' to quit the application
+
+## 📁 Repository Structure
 
 ```
 ER-CNN-Keras/
-├── Documentation.pdf         # Detailed project report
-├── PythonER/                 # Code for the custom CNN model
-│   ├── haarcascade/          # Haar cascade file for face detection
+├── Documentation.pdf           # Detailed project report
+├── PythonER/                   # Code for the custom CNN model
+│   ├── haarcascade/            # Haar cascade file for face detection
 │   │   └── haarcascade_frontalface_default.xml
-│   ├── script/               # Additional scripts (if any)
+│   ├── script/                 # Additional scripts (if any)
 │   │   └── script.py
-│   ├── test.py               # Real-time emotion recognition script (uses custom CNN)
-│   ├── train.py              # Training script for the custom CNN model
-│   ├── emodel.json           # Saved custom CNN model architecture (generated by train.py)
-│   ├── emodel.h5             # Saved custom CNN model weights (generated by train.py)
-│   ├── modelaccuracy.png     # Plot of custom CNN training/validation accuracy
-│   ├── modelloss.png         # Plot of custom CNN training/validation loss
+│   ├── test.py                 # Real-time emotion recognition script
+│   ├── train.py                # Training script for the custom CNN model
+│   ├── modelaccuracy.png       # Plot of CNN training/validation accuracy
+│   ├── modelloss.png           # Plot of CNN training/validation loss
 │   └── mobilenetv2accuracy.png # Plot related to MobileNetV2 experiments
-├── README.md                 # This README file
-├── jupyter/                  # Jupyter notebook for transfer learning experiments
+├── jupyter/                    # Jupyter notebook for transfer learning
 │   └── transfer_learning.ipynb
-├── poster.pptx               # Project poster presentation
-└── teaser.mp4                # Project teaser video
+├── poster.pptx                 # Project poster presentation
+└── teaser.mp4                  # Project teaser video
 ```
 
-## Custom CNN Model
+## 🔍 Future Improvements
 
-### Architecture
+- Explore more advanced architectures like ResNet or EfficientNet
+- Implement ensemble methods combining multiple models
+- Add more data augmentation techniques to improve generalization
+- Optimize for mobile deployment
+- Explore emotion recognition in different lighting conditions and angles
 
-The custom CNN model is defined in `PythonER/train.py` using Keras Sequential API. It consists of the following layers:
+## 📚 Resources
 
-*   Input: 48x48 grayscale images
-*   Conv2D (32 filters, 3x3 kernel, ReLU)
-*   Conv2D (64 filters, 3x3 kernel, ReLU)
-*   MaxPooling2D (2x2)
-*   Dropout (0.25)
-*   Conv2D (128 filters, 3x3 kernel, ReLU)
-*   MaxPooling2D (2x2)
-*   Conv2D (128 filters, 3x3 kernel, ReLU)
-*   MaxPooling2D (2x2)
-*   Dropout (0.25)
-*   Flatten
-*   Dense (1024 units, ReLU)
-*   Dropout (0.5)
-*   Dense (7 units, Softmax) - Output layer for 7 emotion classes
+- [FER-2013 Dataset](https://www.kaggle.com/c/challenges-in-representation-learning-facial-expression-recognition-challenge/data)
+- [Keras Documentation](https://keras.io/)
+- [OpenCV Documentation](https://docs.opencv.org/)
 
-### Training
+---
 
-*   **Dataset:** FER-2013 (Facial Expression Recognition 2013). Assumes data is organized in `data/train` and `data/test` directories, with subdirectories for each emotion class.
-*   **Preprocessing:** Images are rescaled (divided by 255).
-*   **Data Augmentation:** `ImageDataGenerator` is used for real-time augmentation during training, including:
-    *   Random Rotations (0.1 degrees range)
-    *   Random Horizontal Flips
-*   **Optimizer:** Adam (learning rate = 0.0001, decay = 1e-6)
-*   **Loss Function:** Categorical Crossentropy
-*   **Metrics:** Accuracy
-*   **Epochs:** 50
-*   **Batch Size:** 64
-*   **Results:** The model achieved approximately 63.4% accuracy on the test set after 50 epochs (as reported in `Documentation.pdf`).
-
-### Usage (Real-time Recognition)
-
-The `PythonER/test.py` script demonstrates how to use the trained custom CNN model for real-time emotion recognition from a webcam feed.
-
-1.  **Prerequisites:** Ensure you have the necessary libraries installed (OpenCV, Keras/TensorFlow, NumPy).
-2.  **Model Files:** Make sure the trained model files (`emodel.json` and `emodel.h5`) and the Haar cascade file (`haarcascade/haarcascade_frontalface_default.xml`) are present in the `PythonER` directory.
-3.  **Run the script:**
-    ```bash
-    cd PythonER
-    python test.py
-    ```
-4.  **Functionality:**
-    *   Captures video from the default webcam.
-    *   Uses the Haar Cascade classifier to detect faces in each frame.
-    *   For each detected face:
-        *   Extracts the Region of Interest (ROI).
-        *   Converts the ROI to grayscale and resizes it to 48x48 pixels.
-        *   Preprocesses the image (normalizes pixel values).
-        *   Feeds the image to the loaded CNN model for prediction.
-        *   Determines the emotion with the highest probability.
-        *   Displays the predicted emotion label above the detected face in the video window.
-    *   Press 'q' to quit the application.
-
-## Transfer Learning with MobileNetV2
-
-The `jupyter/transfer_learning.ipynb` notebook explores using MobileNetV2, pre-trained on ImageNet, for emotion recognition.
-
-*   **Approach:**
-    1.  Load MobileNetV2 without its top classification layer.
-    2.  Freeze the base model's weights.
-    3.  Add new layers on top: Data Augmentation (RandomFlip, RandomRotation), GlobalAveragePooling2D, Dropout, and a Dense layer (7 units, Softmax).
-    4.  Train only the new layers (feature extraction).
-    5.  Optionally, unfreeze some layers of the base model and continue training with a lower learning rate (fine-tuning).
-*   **Dataset:** FER-2013, loaded using `tf.keras.utils.image_dataset_from_directory`.
-*   **Results:** The documentation reports that this approach (including fine-tuning) achieved around 35% accuracy, which was less convincing than the custom CNN trained from scratch.
-
-## Dependencies
-
-*   Python 3.x
-*   TensorFlow / Keras
-*   OpenCV-Python (`opencv-python`)
-*   NumPy
-*   Matplotlib (for plotting in `train.py` and the notebook)
-*   Jupyter Notebook (to run the transfer learning experiment)
-
-(Note: Specific versions might be required; refer to potential requirements files if available or test compatibility.)
-
-## References
-
-Please refer to the `Documentation.pdf` file for detailed explanations, methodology, results, and references used in this project.
+Created by [zrsoo](https://github.com/zrsoo) 💻
